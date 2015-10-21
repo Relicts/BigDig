@@ -1,0 +1,43 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "LmicFactory",
+    "longName": "BigDig",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "characterRegex": "[0-9:.]",
+                "file": "fonts/bigtimefont.ttf",
+                "name": "FONT_TIMES_NUMBER_56",
+                "targetPlatforms": [
+                    "aplite",
+                    "basalt"
+                ],
+                "type": "font"
+            },
+            {
+                "file": "images/background.png",
+                "name": "IMAGE_BACKGROUND",
+                "targetPlatforms": [
+                    "aplite",
+                    "basalt"
+                ],
+                "type": "png"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "BigDig",
+    "targetPlatforms": [
+        "aplite",
+        "basalt"
+    ],
+    "uuid": "669151cd-4681-48ce-a137-57e556051ae1",
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": true
+    }
+}

@@ -10,8 +10,8 @@
         "media": [
             {
                 "characterRegex": "[0-9:.]",
-                "file": "fonts/bigtimefont.ttf",
-                "name": "FONT_TIMES_NUMBER_56",
+                "file": "fonts/oswaldbold.ttf",
+                "name": "FONT_OSWALDBOLD_NUMBER_56",
                 "targetPlatforms": [
                     "aplite",
                     "basalt"
@@ -32,7 +32,6 @@
     "sdkVersion": "3",
     "shortName": "BigDig",
     "targetPlatforms": [
-        "aplite",
         "basalt"
     ],
     "uuid": "669151cd-4681-48ce-a137-57e556051ae1",

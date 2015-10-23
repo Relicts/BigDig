@@ -53,9 +53,9 @@ static void update_mess() {
 static void update_bg(Layer *layer, GContext* ctx) {
   GRect bounds = layer_get_bounds(layer);
 
-  //graphics_context_set_fill_color(ctx, backcolor);     // Цвет фона
-  //graphics_context_set_compositing_mode(ctx, compop);  // Режим композитинга
-  //graphics_fill_rect(ctx, bounds, 0, GCornerNone);     // Заливаем слой
+  graphics_context_set_fill_color(ctx, backcolor);     // Цвет фона
+  graphics_context_set_compositing_mode(ctx, compop);  // Режим композитинга
+  graphics_fill_rect(ctx, bounds, 0, GCornerNone);     // Заливаем слой
 
   graphics_draw_rect(ctx, GRect(10, 20, 100, 120));
   
@@ -73,18 +73,18 @@ static void main_window_load(Window *window) {
   switch (watchface_theme) {
     case 0:
       backcolor = GColorBlack;        // устанавливаем цвет фона - черный
-      forecolor = GColorClear;        // устанавливаем цвет шрифта - белый
+      forecolor = GColorWhite;        // устанавливаем цвет шрифта - белый
       compop = GCompOpAssignInverted; // Режим композитинга - инвернтный
       break;
     case 1:
-      backcolor = GColorClear;        // устанавливаем цвет фона - белый
+      backcolor = GColorWhite;        // устанавливаем цвет фона - белый
       forecolor = GColorBlack;        // устанавливаем цвет шрифта - черный
       compop = GCompOpAssign;         // Режим композитинга - нормальный
       break;
     default:
-      backcolor = GColorBlack;        // устанавливаем цвет фона - черный
-      forecolor = GColorClear;        // устанавливаем цвет шрифта - белый
-      compop = GCompOpAssignInverted; // Режим композитинга - инвернтный
+      backcolor = GColorClear;        // устанавливаем цвет фона - белый
+      forecolor = GColorBlack;        // устанавливаем цвет шрифта - черный
+      compop = GCompOpAssign;         // Режим композитинга - нормальный
   }  
   s_bg_layer = layer_create(window_bounds);      // создаем слой фона
   layer_add_child(window_layer, s_bg_layer);     // добавляем слой фона к основному слою 
@@ -96,7 +96,7 @@ static void main_window_load(Window *window) {
   // инициализация слоя для времени
   s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_OSWALDBOLD_NUMBER_56));  // загружаем фонт из ресурса
   s_time_layer = text_layer_create(GRect(0, 27, 144, 150));    // создаем текстовый слой
-  text_layer_set_background_color(s_time_layer, backcolor);    // устанавливаем цвет фона
+  text_layer_set_background_color(s_time_layer, GColorClear);    // устанавливаем цвет фона
   text_layer_set_text_color(s_time_layer, forecolor);          // устанавливаем цвет шрифта
   text_layer_set_text(s_time_layer, "00:00");                  // выводим текст на слой
   text_layer_set_font(s_time_layer, s_time_font);                     // устанавливаем какой фонт будет использоваться при выводе текста на этот слой
@@ -105,8 +105,8 @@ static void main_window_load(Window *window) {
 
   // инициализация слоя для даты
   // http://habrahabr.ru/company/madrobots/blog/204338/
-  s_date_layer = text_layer_create(GRect(0, 90, 144, 150));    // создаем текстовый слой
-  text_layer_set_background_color(s_date_layer, backcolor);    // устанавливаем цвет фона
+  s_date_layer = text_layer_create(GRect(0, 90, 144, 75));    // создаем текстовый слой
+  text_layer_set_background_color(s_date_layer, GColorClear);    // устанавливаем цвет фона
   text_layer_set_text_color(s_date_layer, forecolor);          // устанавливаем цвет шрифта
   text_layer_set_text(s_date_layer, "XX.XX.XXXX");             // выводим текст на слой
   text_layer_set_font(s_date_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
@@ -115,8 +115,8 @@ static void main_window_load(Window *window) {
   layer_add_child(s_bg_layer, text_layer_get_layer(s_date_layer));  // добавляем слой с временем в окно
 
   // инициализация слоя для сообщения
-  s_mess_layer = text_layer_create(GRect(0, 110, 144, 150));    // создаем текстовый слой
-  text_layer_set_background_color(s_mess_layer, backcolor);    // устанавливаем цвет фона
+  s_mess_layer = text_layer_create(GRect(0, 110, 144, 50));    // создаем текстовый слой
+  text_layer_set_background_color(s_mess_layer, GColorClear);    // устанавливаем цвет фона
   text_layer_set_text_color(s_mess_layer, forecolor);          // устанавливаем цвет шрифта
   text_layer_set_text(s_mess_layer, "XXXXXXXXXXX");             // выводим текст на слой
   text_layer_set_font(s_mess_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));

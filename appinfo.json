@@ -13,7 +13,6 @@
                 "file": "fonts/oswaldbold.ttf",
                 "name": "FONT_OSWALDBOLD_NUMBER_56",
                 "targetPlatforms": [
-                    "aplite",
                     "basalt"
                 ],
                 "type": "font"
@@ -22,7 +21,6 @@
                 "file": "images/background.png",
                 "name": "IMAGE_BACKGROUND",
                 "targetPlatforms": [
-                    "aplite",
                     "basalt"
                 ],
                 "type": "png"

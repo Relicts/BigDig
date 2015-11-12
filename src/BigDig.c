@@ -12,41 +12,65 @@ static GColor forecolor;         // цвет шрифта
 static GCompOp compop;           // режим композитинга
 static int watchface_theme;      // тема циферблата 
 
+#define    PK_LANG_DATETIME_ADBBRDAYSOFWEEK 12	
+#define    PK_LANG_DATETIME_MONTHNAMES 13	
+#define    PK_LANG_DATETIME_DAYSOFWEEK 14	
+
+typedef struct persist_datetime_lang { // 249 bytes
+  char abbrDaysOfWeek[7][5];      //  21:  2 characters for each of  7 weekdays
+  char monthsNames[12][20];       // 144: 11 characters for each of 12 months
+  char DaysOfWeek[7][32];         //  84: 11 characters for each of  7 weekdays
+//                                   249 bytes
+} __attribute__((__packed__)) persist_datetime_lang;  // структура для сохранения в хранилище часов
+
+persist_datetime_lang lang_datetime = {
+  .abbrDaysOfWeek = { "Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб" },
+  .monthsNames = { "ЯНВАРЬ", "ФЕВРАЛЬ", "МАРТ", "АПРЕЛЬ", "МАЙ", "ИЮНЬ", "ИЮЛЬ", "АВГУСТ", "СЕНТЯБРЬ", "ОКТЯБРЬ", "НОЯБРЬ", "ДЕКАБРЬ" },
+  .DaysOfWeek = { "Воскресенье", "Понедельник", "Вторник", "Среда", "R Четверг", "Пятница", "Суббота" },
+};
+
+
+
+
 static void update_time() {
+  static char buffer[6];  // создаем буффер для сохранения времени
+
   time_t temp = time(NULL); 
   struct tm *tick_time = localtime(&temp);
 
-  static char buffer[] = "00:00";  // создаем буффер для сохранения времени
-
+  
   // записываем текущие часы и минуты в строковый буффер
   if(clock_is_24h_style() == true) {
-    strftime(buffer, sizeof("00:00"), "%H:%M", tick_time);  // Use 24 hour format
+    strftime(buffer, sizeof(buffer), "%H:%M", tick_time);  // Use 24 hour format
     //strncpy(buffer, "00:00", sizeof("00:00"));
   } else {
-    strftime(buffer, sizeof("00:00"), "%I:%M", tick_time);  // Use 12 hour format
+    strftime(buffer, sizeof(buffer), "%I:%M", tick_time);  // Use 12 hour format
   }
 
   text_layer_set_text(s_time_layer, buffer);  // выводим время на текстовый слой
 }
 
 static void update_date() {
+  static char buffer[11];  // создаем буффер для сохранения
+  
   time_t temp = time(NULL); 
   struct tm *tick_time = localtime(&temp);
 
-  static char buffer[] = "RR.RR.RRRR";  // создаем буффер для сохранения
-  
   // http://www.cplusplus.com/reference/ctime/strftime/
-  strftime(buffer, sizeof("00.00.0000"), "%d.%m.%Y", tick_time);
+  strftime(buffer, sizeof(buffer), "%d.%m.%Y", tick_time);
 
   text_layer_set_text(s_date_layer, buffer);  // выводим время на текстовый слой
 }
 
 static void update_mess() {
+  static char buffer[101];  // создаем буффер для сохранения
+
   time_t temp = time(NULL); 
   struct tm *tick_time = localtime(&temp);
 
-  static char buffer[] = "RRRRRRRRRRR";  // создаем буффер для сохранения
-  strftime(buffer, sizeof("RRRRRRRRRRR"), "%B", tick_time);
+  //strftime(buffer, sizeof(buffer), "%B", tick_time);
+  //snprintf(buffer, sizeof(buffer), "%d", tick_time->tm_wday);
+  snprintf(buffer, sizeof(buffer), "%s %d %s", "ШБ", tick_time->tm_wday, lang_datetime.DaysOfWeek[tick_time->tm_wday]);
   text_layer_set_text(s_mess_layer, buffer); 
 }
 
@@ -65,6 +89,43 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
   update_time();
   update_date();
   update_mess();
+}
+
+void in_configuration_handler(DictionaryIterator *received, void *context) {
+
+/*    // begin translations...
+    Tuple *translation;
+
+    // AK_TRANS_ABBR_*DAY == abbrDaysOfWeek // localized Su Mo Tu We Th Fr Sa
+    for (int i = AK_TRANS_ABBR_SUNDAY; i <= AK_TRANS_ABBR_SATURDAY; i++ ) {
+      translation = dict_find(received, i);
+      if (translation != NULL) {
+        strncpy(lang_datetime.abbrDaysOfWeek[i - AK_TRANS_ABBR_SUNDAY], translation->value->cstring, sizeof(lang_datetime.abbrDaysOfWeek[i - AK_TRANS_ABBR_SUNDAY])-1);
+      }
+    }
+
+    // AK_TRANS_*DAY == daysOfWeek // localized Sunday through Saturday, max ~11 characters
+    for (int i = AK_TRANS_SUNDAY; i <= AK_TRANS_SATURDAY; i++ ) {
+      translation = dict_find(received, i);
+      if (translation != NULL) {
+        strncpy(lang_datetime.DaysOfWeek[i - AK_TRANS_SUNDAY], translation->value->cstring, sizeof(lang_datetime.DaysOfWeek[i - AK_TRANS_SUNDAY])-1);
+      }
+    }
+
+    // AK_TEXT_MONTH == monthsOfYear // localized month names, max ~9 characters ('September' == practical display limit)
+    for (int i = AK_TRANS_JANUARY; i <= AK_TRANS_DECEMBER; i++ ) {
+      translation = dict_find(received, i);
+      if (translation != NULL) {
+        strncpy(lang_datetime.monthsNames[i - AK_TRANS_JANUARY], translation->value->cstring, sizeof(lang_datetime.monthsNames[i - AK_TRANS_JANUARY])-1);
+      }
+    }
+
+  // сохраняем наименования месяцев и дней недели
+  persist_write_data(PK_LANG_DATETIME_ADBBRDAYSOFWEEK, &lang_datetime.abbrDaysOfWeek, sizeof(lang_datetime.abbrDaysOfWeek) );
+  persist_write_data(PK_LANG_DATETIME_MONTHNAMES, &lang_datetime.monthsNames, sizeof(lang_datetime.monthsNames) );
+  persist_write_data(PK_LANG_DATETIME_DAYSOFWEEK, &lang_datetime.DaysOfWeek, sizeof(lang_datetime.DaysOfWeek) );
+*/
+  
 }
 
 static void main_window_load(Window *window) {
@@ -95,7 +156,7 @@ static void main_window_load(Window *window) {
 //  layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_background_layer));// добавляем слой в окно
   // инициализация слоя для времени
   s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_OSWALDBOLD_NUMBER_56));  // загружаем фонт из ресурса
-  s_time_layer = text_layer_create(GRect(0, 27, 144, 150));    // создаем текстовый слой
+  s_time_layer = text_layer_create(GRect(0, 20, 144, 150));    // создаем текстовый слой
   text_layer_set_background_color(s_time_layer, GColorClear);    // устанавливаем цвет фона
   text_layer_set_text_color(s_time_layer, forecolor);          // устанавливаем цвет шрифта
   text_layer_set_text(s_time_layer, "00:00");                  // выводим текст на слой
@@ -115,11 +176,11 @@ static void main_window_load(Window *window) {
   layer_add_child(s_bg_layer, text_layer_get_layer(s_date_layer));  // добавляем слой с временем в окно
 
   // инициализация слоя для сообщения
-  s_mess_layer = text_layer_create(GRect(0, 110, 144, 50));    // создаем текстовый слой
+  s_mess_layer = text_layer_create(GRect(0, 130, 144, 30));    // создаем текстовый слой
   text_layer_set_background_color(s_mess_layer, GColorClear);    // устанавливаем цвет фона
   text_layer_set_text_color(s_mess_layer, forecolor);          // устанавливаем цвет шрифта
   text_layer_set_text(s_mess_layer, "XXXXXXXXXXX");             // выводим текст на слой
-  text_layer_set_font(s_mess_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
+  text_layer_set_font(s_mess_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
   //text_layer_set_font(s_date_layer, s_time_font);                     // устанавливаем какой фонт будет использоваться при выводе текста на этот слой
   text_layer_set_text_alignment(s_mess_layer, GTextAlignmentCenter);  // устанваливаем выравнивание
   layer_add_child(s_bg_layer, text_layer_get_layer(s_mess_layer));  // добавляем слой с временем в окно
@@ -136,6 +197,25 @@ static void main_window_unload(Window *window) {
 }
 
 static void init() {
+  app_message_register_inbox_received(in_configuration_handler);
+  
+  // загружаем наименования месяцев и дней недели
+	if (persist_exists(PK_LANG_DATETIME_ADBBRDAYSOFWEEK)) {
+		persist_read_data(PK_LANG_DATETIME_ADBBRDAYSOFWEEK, &lang_datetime.abbrDaysOfWeek, sizeof(lang_datetime.abbrDaysOfWeek) );
+	} else {
+    persist_write_data(PK_LANG_DATETIME_ADBBRDAYSOFWEEK, &lang_datetime.abbrDaysOfWeek, sizeof(lang_datetime.abbrDaysOfWeek) );
+  }
+	if (persist_exists(PK_LANG_DATETIME_MONTHNAMES)) {
+		persist_read_data(PK_LANG_DATETIME_MONTHNAMES, &lang_datetime.monthsNames, sizeof(lang_datetime.monthsNames) );
+	} else {
+    persist_write_data(PK_LANG_DATETIME_MONTHNAMES, &lang_datetime.monthsNames, sizeof(lang_datetime.monthsNames) );
+  }
+	if (persist_exists(PK_LANG_DATETIME_DAYSOFWEEK)) {
+		persist_read_data(PK_LANG_DATETIME_DAYSOFWEEK, &lang_datetime.DaysOfWeek, sizeof(lang_datetime.DaysOfWeek) );
+	} else {
+    persist_write_data(PK_LANG_DATETIME_DAYSOFWEEK, &lang_datetime.DaysOfWeek, sizeof(lang_datetime.DaysOfWeek) );
+  }
+  
   watchface_theme = 0;
   s_main_window = window_create();  // создаем элемент основного окна и присваиваем на указатель
   // устанавливаем обработчики для управления элементами внутри окна

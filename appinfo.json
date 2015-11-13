@@ -1,7 +1,9 @@
 {
-    "appKeys": {},
+    "appKeys": {
+        "Theme": 100
+    },
     "capabilities": [
-        ""
+        "configurable"
     ],
     "companyName": "LmicFactory",
     "longName": "BigDig",
@@ -12,29 +14,21 @@
                 "characterRegex": "[0-9:.]",
                 "file": "fonts/oswaldbold.ttf",
                 "name": "FONT_OSWALDBOLD_NUMBER_56",
-                "targetPlatforms": [
-                    "basalt"
-                ],
                 "type": "font"
             },
             {
                 "file": "images/background.png",
                 "name": "IMAGE_BACKGROUND",
-                "targetPlatforms": [
-                    "basalt"
-                ],
                 "type": "png"
             }
         ]
     },
-    "sdkVersion": "3",
+    "sdkVersion": "2",
     "shortName": "BigDig",
-    "targetPlatforms": [
-        "basalt"
-    ],
     "uuid": "669151cd-4681-48ce-a137-57e556051ae1",
+    "versionCode": 1,
     "versionLabel": "1.0",
     "watchapp": {
-        "watchface": true
+        "watchface": false
     }
 }
